@@ -1,9 +1,15 @@
-#[path = "2023/day_1/1_1.rs"]
-mod day_1_1;
+mod utils;
+mod year_2023;
 
 fn main() {
-    let day_1_1_sample_result = day_1_1::run("/src/2023/day_1/1_1_sample");
-    assert_eq!(142, day_1_1_sample_result);
-    let day_1_1_input_result = day_1_1::run("/src/2023/day_1/1_1_input");
-    assert_eq!(55130, day_1_1_input_result);
+    assert_eq!(
+        142,
+        year_2023::day_1::first::run("/src/year_2023/day_1/first_sample")
+    );
+    assert_eq!(
+        55130,
+        year_2023::day_1::first::run("/src/year_2023/day_1/first_input")
+    );
+
+    year_2023::day_1::second::run("/src/year_2023/day_1/second_sample");
 }

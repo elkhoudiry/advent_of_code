@@ -1,17 +1,15 @@
-#[path = "../../utils/files_utils.rs"]
-mod files_utils;
-
+use crate::utils::files;
 use regex::Regex;
 
 pub fn run(file_path: &str) -> i32 {
-    handle_input(files_utils::get_file_contents(file_path).as_str())
+    handle_input(files::get_file_contents(file_path).as_str())
 }
 
 fn handle_input(input: &str) -> i32 {
-    let regex = Regex::new(r"[0-9]").unwrap();
+    let regex = Regex::new("[0-9]").unwrap();
 
     let result: i32 = input
-        .split("\n")
+        .lines()
         .map(|item| handle_line(item, regex.clone())) // clone !!
         .sum();
 
