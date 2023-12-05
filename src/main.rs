@@ -10,6 +10,12 @@ fn main() {
         55130,
         year_2023::day_1::first::run("/src/year_2023/day_1/first_input")
     );
-
-    year_2023::day_1::second::run("/src/year_2023/day_1/second_sample");
+    assert_eq!(
+        281,
+        year_2023::day_1::second::run("/src/year_2023/day_1/second_sample")
+    );
+    assert_eq!(
+        54978,
+        year_2023::day_1::second::run("/src/year_2023/day_1/first_input")
+    );
 }
