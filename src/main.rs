@@ -15,7 +15,7 @@ fn main() {
         year_2023::day_1::second::run("/src/year_2023/day_1/second_sample")
     );
     assert_eq!(
-        54978,
+        54985,
         year_2023::day_1::second::run("/src/year_2023/day_1/first_input")
     );
 }

@@ -2,7 +2,9 @@ use crate::utils::files;
 use regex::Regex;
 
 pub fn run(file_path: &str) -> i32 {
-    handle_input(files::get_file_contents(file_path).as_str())
+    let answer = handle_input(files::get_file_contents(file_path).as_str());
+    println!("Day 1-1 answer: {answer}");
+    answer
 }
 
 fn handle_input(input: &str) -> i32 {
@@ -22,13 +24,7 @@ fn handle_line(line: &str, regex: Regex) -> i32 {
         .map(|m| m.as_str())
         .collect::<Vec<_>>();
 
-    if results.len() > 1 {
-        format!("{}{}", results.first().unwrap(), results.last().unwrap())
-            .parse::<i32>()
-            .unwrap()
-    } else {
-        format!("{}{}", results.first().unwrap(), results.first().unwrap())
-            .parse::<i32>()
-            .unwrap()
-    }
+    format!("{}{}", results[0], results.last().unwrap_or(&results[0]))
+        .parse::<i32>()
+        .unwrap()
 }
