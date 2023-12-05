@@ -15,9 +15,10 @@ fn handle_input(input: &str) -> i32 {
     let result: i32 = input
         .lines()
         .enumerate()
-        .map(|(number, item)| {
+        .map(|(index, item)| {
             let result = handle_line(item, regex.clone());
-            println!("[{TAG}] Line #{} result: {result}", number + 1);
+            let line_number = index + 1;
+            println!("[{TAG}] Line #{} result: {result}", line_number);
             result
         })
         .sum();
