@@ -1,9 +1,11 @@
 use crate::utils::files;
 use regex::Regex;
 
+const TAG: &str = "DAY 1-1";
+
 pub fn run(file_path: &str) -> i32 {
     let answer = handle_input(files::get_file_contents(file_path).as_str());
-    println!("Day 1-1 answer: {answer}");
+    println!("[{TAG}] Answer: {answer}");
     answer
 }
 
@@ -12,7 +14,12 @@ fn handle_input(input: &str) -> i32 {
 
     let result: i32 = input
         .lines()
-        .map(|item| handle_line(item, regex.clone())) // clone !!
+        .enumerate()
+        .map(|(number, item)| {
+            let result = handle_line(item, regex.clone());
+            println!("[{TAG}] Line #{} result: {result}", number + 1);
+            result
+        })
         .sum();
 
     result

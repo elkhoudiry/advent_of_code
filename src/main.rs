@@ -18,4 +18,8 @@ fn main() {
         54985,
         year_2023::day_1::second::run("/src/year_2023/day_1/first_input")
     );
+    assert_eq!(
+        3,
+        year_2023::day_2::first::run("/src/year_2023/day_2/first_sample")
+    );
 }
