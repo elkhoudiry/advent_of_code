@@ -18,6 +18,7 @@ fn main() {
         54985,
         year_2023::day_1::second::run("/src/year_2023/day_1/first_input")
     );
+
     assert_eq!(
         8,
         year_2023::day_2::first::run("/src/year_2023/day_2/first_sample")
@@ -34,4 +35,21 @@ fn main() {
         63700,
         year_2023::day_2::second::run("/src/year_2023/day_2/first_input")
     );
+
+    assert_eq!(
+        4361,
+        year_2023::day_3::first::run("/src/year_2023/day_3/first_sample")
+    );
+    assert_eq!(
+        2176,
+        year_2023::day_3::first::run("/src/year_2023/day_3/first_input")
+    );
+    // assert_eq!(
+    //     2286,
+    //     year_2023::day_3::second::run("/src/year_2023/day_3/first_sample")
+    // );
+    // assert_eq!(
+    //     63700,
+    //     year_2023::day_3::second::run("/src/year_2023/day_3/first_input")
+    // );
 }
