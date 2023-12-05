@@ -19,7 +19,11 @@ fn main() {
         year_2023::day_1::second::run("/src/year_2023/day_1/first_input")
     );
     assert_eq!(
-        3,
+        8,
         year_2023::day_2::first::run("/src/year_2023/day_2/first_sample")
+    );
+    assert_eq!(
+        2176,
+        year_2023::day_2::first::run("/src/year_2023/day_2/first_input")
     );
 }

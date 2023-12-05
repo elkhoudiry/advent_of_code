@@ -1,10 +1,12 @@
 use crate::utils::files;
 
-const TAG: &str = "DAY 1-2";
+const TAG: &str = "[DAY 1-2]";
 
 pub fn run(file_path: &str) -> i32 {
+    println!("{TAG} Starting ...");
     let answer = handle_input(files::get_file_contents(file_path).as_str());
-    println!("[{TAG}] Answer: {answer}");
+    println!("{TAG} Answer: {answer}");
+    println!("{TAG} ==========");
     answer
 }
 
@@ -15,7 +17,7 @@ fn handle_input(input: &str) -> i32 {
         .map(|(index, item)| {
             let result = handle_line(item);
             let line_number = index + 1;
-            println!("[{TAG}] Line #{} result: {result}", line_number);
+            println!("{TAG} Line #{} result: {result}", line_number);
             result
         })
         .sum()
