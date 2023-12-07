@@ -41,7 +41,7 @@ fn main() {
         year_2023::day_3::first::run("/src/year_2023/day_3/first_sample")
     );
     assert_eq!(
-        2176,
+        533912,
         year_2023::day_3::first::run("/src/year_2023/day_3/first_input")
     );
     // assert_eq!(

@@ -1,4 +1,7 @@
-use std::cmp::{max, min};
+use std::{
+    cmp::{max, min},
+    ops::Add,
+};
 
 use crate::utils::files;
 
@@ -36,29 +39,45 @@ fn handle_input(input: &str) -> i32 {
 }
 
 fn handle_line(line: &str, previous: Option<&str>, next: Option<&str>) -> i32 {
-    let numbers = line
-        .split('.')
-        .map(|item| {
-            item.chars()
-                .filter(|char| !is_symbol(char))
-                .collect::<Vec<_>>()
-                .into_iter()
-                .collect::<String>()
-        })
-        .filter(|item| item != "");
+    let numbers = line.chars();
+    let number_size = numbers.clone().collect::<Vec<_>>().len();
+    let mut counter = 0;
 
-    println!(
-        "{TAG} Line numbers: {:#?}",
-        numbers.clone().collect::<Vec<_>>()
-    );
+    let mut sum = 0;
 
-    numbers
-        .map(|number| handle_number(number.as_str(), line, previous, next))
-        .sum()
+    while counter < number_size {
+        let nth = numbers.clone().nth(counter);
+        let char = nth.clone().unwrap();
+        let mut buf: String = "".to_string();
+
+        if is_digit(char) {
+            buf += char.to_string().as_str();
+            while counter + 1 < number_size && is_digit(numbers.clone().nth(counter + 1).unwrap()) {
+                counter += 1;
+                let nth = numbers.clone().nth(counter);
+                let char = nth.clone().unwrap();
+                buf += char.to_string().as_str();
+            }
+        }
+
+        if buf != "" {
+            sum += handle_number(buf.as_str(), line, counter + 1 - buf.len(), previous, next);
+        }
+
+        counter += 1;
+    }
+
+    sum
 }
 
-fn handle_number(number: &str, line: &str, previous: Option<&str>, next: Option<&str>) -> i32 {
-    let number_start_index = line.find(number).unwrap();
+fn handle_number(
+    number: &str,
+    line: &str,
+    index: usize,
+    previous: Option<&str>,
+    next: Option<&str>,
+) -> i32 {
+    let number_start_index = index;
     let number_end_index = number_start_index + number.len() - 1;
 
     println!("{TAG} handling number: {number}, start index: {number_start_index}, end index: {number_end_index}");
@@ -115,5 +134,12 @@ fn is_symbol(char: &char) -> bool {
     match char {
         '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '0' | '.' => false,
         _ => true,
+    }
+}
+
+fn is_digit(char: char) -> bool {
+    match char {
+        '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '0' => true,
+        _ => false,
     }
 }
