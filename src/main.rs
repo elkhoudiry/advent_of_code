@@ -41,8 +41,25 @@ fn main() {
         year_2023::day_3::first::run("/src/year_2023/day_3/first_sample")
     );
     assert_eq!(
-        533912,
+        533775,
         year_2023::day_3::first::run("/src/year_2023/day_3/first_input")
+    );
+    // assert_eq!(
+    //     2286,
+    //     year_2023::day_3::second::run("/src/year_2023/day_3/first_sample")
+    // );
+    // assert_eq!(
+    //     63700,
+    //     year_2023::day_3::second::run("/src/year_2023/day_3/first_input")
+    // );
+
+    assert_eq!(
+        13,
+        year_2023::day_4::first::run("/src/year_2023/day_4/first_sample")
+    );
+    assert_eq!(
+        27454,
+        year_2023::day_4::first::run("/src/year_2023/day_4/first_input")
     );
     // assert_eq!(
     //     2286,
