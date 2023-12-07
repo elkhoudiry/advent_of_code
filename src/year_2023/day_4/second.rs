@@ -2,7 +2,7 @@ use crate::utils::files;
 
 const TAG: &str = "[DAY 4-1]";
 
-pub fn run(file_path: &str) -> i32 {
+pub fn run(file_path: &str) -> i64 {
     println!("{TAG} Starting ...");
     let answer = handle_input(files::get_file_contents(file_path).as_str());
     println!("{TAG} Answer: {answer}");
@@ -10,14 +10,26 @@ pub fn run(file_path: &str) -> i32 {
     answer
 }
 
-fn handle_input(input: &str) -> i32 {
+fn handle_input(input: &str) -> i64 {
     let lines = input.lines();
+    let size = lines.clone().collect::<Vec<_>>().len();
+    let mut cards: Vec<i64> = vec![];
+
+    for _ in 0..size {
+        cards.push(1);
+    }
+
+    assert_eq!(size, cards.len());
 
     lines
         .clone()
         .enumerate()
-        .map(|(index, item)| {
-            let result = handle_line(item.to_string());
+        .map(|(index, line)| {
+            for _ in 0..cards[index] {
+                handle_line(index, line.to_string(), &mut cards);
+            }
+            let result = cards[index];
+
             let line_number = index + 1;
             println!("{TAG} Line #{line_number} result: {result}",);
             result
@@ -25,7 +37,7 @@ fn handle_input(input: &str) -> i32 {
         .sum()
 }
 
-fn handle_line(line: String) -> i32 {
+fn handle_line(index: usize, line: String, cards: &mut Vec<i64>) -> i64 {
     let all_numbers = line.split(':').nth(1).unwrap();
     let winning = all_numbers
         .split('|')
@@ -49,11 +61,12 @@ fn handle_line(line: String) -> i32 {
         }
     });
 
-    if mine_winning.len() > 1 {
-        let mut result = 1;
-        mine_winning[1..].iter().for_each(|_| result = result * 2); // totally can't remember optimal operation
-        result
-    } else {
-        mine_winning.len() as i32
+    let mut counter = index;
+
+    while counter < index + mine_winning.len() && counter + 1 < cards.len() {
+        cards[counter + 1] = cards[counter + 1] + 1;
+        counter += 1;
     }
+
+    0
 }
