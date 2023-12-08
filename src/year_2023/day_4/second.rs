@@ -1,6 +1,6 @@
 use crate::utils::files;
 
-const TAG: &str = "[DAY 4-1]";
+const TAG: &str = "[DAY 4-2]";
 
 pub fn run(file_path: &str) -> i64 {
     println!("{TAG} Starting ...");
