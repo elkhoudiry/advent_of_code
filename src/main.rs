@@ -78,4 +78,12 @@ fn main() {
         227653707,
         year_2023::day_5::first::run("/src/year_2023/day_5/first_input")
     );
+    assert_eq!(
+        46,
+        year_2023::day_5::second::run("/src/year_2023/day_5/first_sample")
+    );
+    assert_eq!(
+        227653707,
+        year_2023::day_5::second::run("/src/year_2023/day_5/first_input")
+    );
 }

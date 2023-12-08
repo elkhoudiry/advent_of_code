@@ -62,6 +62,8 @@ fn get_lowest_location(
     let mut locations: Vec<i64> = vec![];
 
     for seed in seeds {
+        println!("{TAG} seed: {seed}");
+
         let soil = map_number(seed, soil_map);
         let fertalizer = map_number(soil, fertalizer_map);
         let water = map_number(fertalizer, water_map);
