@@ -87,4 +87,6 @@ fn main() {
         78775051,
         year_2023::day_5::second::run("/src/year_2023/day_5/first_input")
     );
+
+    year_2023::day_6::run("/src/year_2023/day_6")
 }
