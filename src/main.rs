@@ -70,7 +70,7 @@ fn main() {
     //     year_2023::day_4::second::run("/src/year_2023/day_4/first_input")
     // );
 
-    year_2023::day_5::second_alt2::test();
+    year_2023::day_5::second::test();
     // assert_eq!(
     //     35,
     //     year_2023::day_5::first::run("/src/year_2023/day_5/first_sample")
@@ -81,10 +81,10 @@ fn main() {
     // );
     assert_eq!(
         46,
-        year_2023::day_5::second_alt2::run("/src/year_2023/day_5/first_sample")
+        year_2023::day_5::second::run("/src/year_2023/day_5/first_sample")
     );
     assert_eq!(
-        227653707,
-        year_2023::day_5::second_alt2::run("/src/year_2023/day_5/first_input")
+        78775051,
+        year_2023::day_5::second::run("/src/year_2023/day_5/first_input")
     );
 }
