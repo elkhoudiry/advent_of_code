@@ -234,10 +234,7 @@ fn ranged_seeds(seeds: &str) -> Vec<[i64; 2]> {
     let splitted = seeds
         .split_ascii_whitespace()
         .filter(|item| item.trim() != "")
-        .map(|seed| {
-            seed;
-            seed.trim().parse::<i64>().unwrap()
-        })
+        .map(|seed| seed.trim().parse::<i64>().unwrap())
         .collect::<Vec<_>>();
     let mut seeds: Vec<[i64; 2]> = vec![];
     let mut counter = 0;
@@ -301,18 +298,6 @@ fn test4() {
     map1.push([45, 77, 23]);
 
     let result = split_ranges(74, 14, &mut map1);
-
-    assert_eq!(test_result, result)
-}
-
-fn test5() {
-    let mut map1: Vec<[i64; 3]> = vec![];
-    let test_result: Vec<[i64; 2]> = vec![[78, 3], [45, 11]];
-    map1.push([81, 45, 16]);
-    map1.push([68, 64, 13]);
-    map1.push([45, 77, 23]);
-
-    let result = split_ranges(549922357, 200746426, &mut map1);
 
     assert_eq!(test_result, result)
 }
