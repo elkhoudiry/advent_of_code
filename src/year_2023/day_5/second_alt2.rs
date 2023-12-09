@@ -149,7 +149,6 @@ fn split_ranges(input_min: i64, input_range: i64, map: &mut Vec<[i64; 3]>) -> Ve
                 source
             };
             let range_offset = destination - source;
-            let mapped_destination = start_input + range_offset;
             let limit = if source + range > input_max {
                 input_max - start_input + 1
             } else if input_min > source {
@@ -159,26 +158,26 @@ fn split_ranges(input_min: i64, input_range: i64, map: &mut Vec<[i64; 3]>) -> Ve
             };
 
             if i == 0 && input_min < source {
-                println!("{TAG} Here $3");
                 mapped.push([input_min, source - input_min])
             } else if i > 0 && input_min < source {
                 let previous = map[i - 1];
                 let prev_source = previous[1];
                 let prev_range = previous[2];
-                println!("{TAG} Here $4");
                 let limit = source - prev_source - prev_range;
                 if limit > 0 {
                     mapped.push([prev_source + prev_range, source - prev_source - prev_range])
                 }
             }
-            mapped.push([mapped_destination, limit]);
+            mapped.push([start_input + range_offset, limit]);
+
+            if i == map.len() - 1 && input_max > source + range {
+                mapped.push([start_input + limit, input_max - start_input - limit + 1]);
+            }
         }
 
-        if i == map.len() - 1 && input_max > source + range {
-        } else if input_max < source {
+        if input_max < source {
             let range = mapped.iter().map(|item| item[1]).sum::<i64>();
             if input_max - range - input_min > 0 {
-                println!("{TAG} Here $1");
                 mapped.push([input_min + range, input_max - range - input_min + 1]);
                 break;
             }
@@ -186,7 +185,6 @@ fn split_ranges(input_min: i64, input_range: i64, map: &mut Vec<[i64; 3]>) -> Ve
     }
 
     if mapped.is_empty() {
-        println!("{TAG} Here $2");
         mapped.push([input_min, input_range])
     };
 
@@ -202,7 +200,11 @@ fn split_ranges(input_min: i64, input_range: i64, map: &mut Vec<[i64; 3]>) -> Ve
             .reduce(|acc, item| acc + " " + item.as_str())
             .unwrap()
     );
-    assert_eq!(input_range, mapped.iter().map(|item| item[1]).sum());
+    assert_eq!(
+        input_range,
+        mapped.iter().map(|item| item[1]).sum(),
+        "{TAG} lengthes not matching"
+    );
     return mapped;
 }
 
@@ -290,6 +292,18 @@ fn test4() {
     map1.push([45, 77, 23]);
 
     let result = split_ranges(74, 14, &mut map1);
+
+    assert_eq!(test_result, result)
+}
+
+fn test5() {
+    let mut map1: Vec<[i64; 3]> = vec![];
+    let test_result: Vec<[i64; 2]> = vec![[78, 3], [45, 11]];
+    map1.push([81, 45, 16]);
+    map1.push([68, 64, 13]);
+    map1.push([45, 77, 23]);
+
+    let result = split_ranges(549922357, 200746426, &mut map1);
 
     assert_eq!(test_result, result)
 }

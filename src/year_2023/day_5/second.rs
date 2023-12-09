@@ -108,7 +108,7 @@ fn ranged_seeds(seeds: &str) -> Vec<i64> {
 
         counter += 2;
     }
-    dbg!(seeds.len());
+    seeds.len();
     seeds
 }
 
