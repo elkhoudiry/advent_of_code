@@ -3,7 +3,7 @@ use crate::utils::files;
 const TAG: &str = "[DAY 6-1]";
 
 pub fn execute(file_path: &str) -> i64 {
-    println!("{TAG} atarting ...");
+    println!("{TAG} starting ...");
     let answer = handle_input(files::get_file_contents(file_path).as_str());
     println!("{TAG} answer: {answer}");
     println!("{TAG} ==========");
