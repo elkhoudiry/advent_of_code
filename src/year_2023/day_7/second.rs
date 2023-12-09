@@ -2,7 +2,7 @@ use std::{cmp::Ordering, ops::Index};
 
 use crate::utils::files;
 
-const TAG: &str = "[DAY 7-1]";
+const TAG: &str = "[DAY 7-2]";
 #[derive(Debug)]
 struct Game {
     hand: String,
@@ -112,6 +112,8 @@ fn handle_games(games: Vec<Game>) -> i64 {
         ordered.push(card)
     }
 
+    assert_eq!(games.len(), ordered.len());
+
     ordered
         .iter()
         .enumerate()
@@ -127,42 +129,69 @@ fn is_five_of_a_kind(game: &Game) -> bool {
     let mut chars = game.hand.chars().collect::<Vec<_>>();
     chars.sort();
     chars.dedup();
-    return chars.len() == 1;
+    return chars.len() == 1 || (chars.len() == 2 && chars.contains(&'J'));
 }
 
 fn is_four_of_a_kind(game: &Game) -> bool {
-    let mut chars = game.hand.chars().collect::<Vec<_>>();
+    let original = game.hand.chars().collect::<Vec<_>>();
+    let mut chars = original
+        .iter()
+        .filter(|char| **char != 'J')
+        .collect::<Vec<_>>();
+    let js_count = original.iter().filter(|char| **char == 'J').count();
+
     chars.sort();
 
     let mut counter = 0;
-
-    while counter < chars.len() - 3 {
+    while counter < original.len() - 3 {
+        if chars.len() == 0 {
+            break;
+        }
         let char = chars[counter];
-        if char == chars[counter + 1] && char == chars[counter + 2] && char == chars[counter + 3] {
+        if js_count >= 3
+            || (js_count == 2 && char == chars[counter + 1])
+            || (js_count == 1 && char == chars[counter + 1] && char == chars[counter + 2])
+            || (char == chars[counter + 1]
+                && char == chars[counter + 2]
+                && char == chars[counter + 3])
+        {
             return !is_five_of_a_kind(game);
         }
         counter += 1;
     }
 
-    false
+    js_count >= 3 && !is_five_of_a_kind(game)
 }
 
 fn is_full_house(game: &Game) -> bool {
     let mut chars = game.hand.chars().collect::<Vec<_>>();
     chars.sort();
     chars.dedup();
-    return chars.len() == 2 && !is_four_of_a_kind(game);
+    return (chars.len() == 2 || (chars.len() == 3 && chars.contains(&'J')))
+        && !is_four_of_a_kind(game)
+        && !is_five_of_a_kind(game);
 }
 
 fn is_three_of_a_kind(game: &Game) -> bool {
-    let mut chars = game.hand.chars().collect::<Vec<_>>();
+    let original = game.hand.chars().collect::<Vec<_>>();
+    let mut chars = original
+        .iter()
+        .filter(|char| **char != 'J')
+        .collect::<Vec<_>>();
+    let js_count = original.iter().filter(|char| **char == 'J').count();
     chars.sort();
 
     let mut counter = 0;
 
-    while counter < chars.len() - 2 {
+    while counter < original.len() - 2 {
+        if chars.len() == 0 {
+            break;
+        }
         let char = chars[counter];
-        if char == chars[counter + 1] && char == chars[counter + 2] {
+        if js_count >= 2
+            || (js_count >= 1 && char == chars[counter + 1])
+            || char == chars[counter + 1] && char == chars[counter + 2]
+        {
             chars.dedup();
             return chars.len() == 3 && !is_full_house(game);
         }
@@ -176,21 +205,26 @@ fn is_two_pair(game: &Game) -> bool {
     let mut chars = game.hand.chars().collect::<Vec<_>>();
     chars.sort();
     chars.dedup();
-    return chars.len() == 3 && !is_three_of_a_kind(game);
+
+    let regular_check = chars.len() == 3 && !chars.contains(&'J') && !is_three_of_a_kind(game);
+    let j_check = (chars.len() == 4 && chars.contains(&'J')) && !is_three_of_a_kind(game);
+    return regular_check || j_check;
 }
 
 fn is_one_pair(game: &Game) -> bool {
     let mut chars = game.hand.chars().collect::<Vec<_>>();
     chars.sort();
     chars.dedup();
-    return chars.len() == 4;
+    let old_check = chars.len() == 4 && !is_two_pair(game) && !is_three_of_a_kind(game);
+    let j_check = chars.len() == 5 && chars.contains(&'J');
+    return old_check || j_check;
 }
 
 fn is_high_card(game: &Game) -> bool {
     let mut chars = game.hand.chars().collect::<Vec<_>>();
     chars.sort();
     chars.dedup();
-    return chars.len() == 5;
+    return chars.len() == 5 && !is_one_pair(game);
 }
 
 fn order(item1: &str, item2: &str) -> core::cmp::Ordering {
