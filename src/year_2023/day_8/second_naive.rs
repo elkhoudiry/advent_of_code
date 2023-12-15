@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::utils::files;
 
-const TAG: &str = "[DAY 8-1]";
+const TAG: &str = "[DAY 8-2]";
 
 pub fn execute(file_path: &str) -> i64 {
     println!("{TAG} starting ...");
@@ -37,32 +37,28 @@ fn handle_line<'a>(line: &'a str, map: &mut HashMap<&'a str, [&'a str; 2]>) {
 }
 
 fn navigate(directions: &Vec<char>, map: HashMap<&str, [&str; 2]>) -> i64 {
-    let mut node = "AAA";
-    let mut counter = 0;
-    let directions_count = directions.len() as i32;
+    let mut nodes = map
+        .iter()
+        .filter(|map| map.0.ends_with('A'))
+        .map(|item| item.0)
+        .collect::<Vec<_>>();
+    let mut counter: i64 = 0;
+    let directions_count = directions.len() as i64;
+    println!("{TAG} nodes: {:#?}", &nodes);
 
-    while node != "ZZZ" {
-        let next_direction = if counter < directions_count {
-            counter
-        } else {
-            abs(counter % directions_count)
-        } as usize;
-        let next_node = map[node];
-        if directions.get(next_direction).unwrap() == &'L' {
-            node = next_node[0];
-        } else {
-            node = next_node[1];
+    while !nodes.iter().all(|item| item.ends_with('Z')) {
+        for i in 0..nodes.len() {
+            nodes[i] = if directions[(counter % directions_count) as usize] == 'L' {
+                &map[nodes[i]][0]
+            } else {
+                &map[nodes[i]][1]
+            }
         }
         counter += 1;
+        if counter % 10_000_000 == 0 {
+            dbg!(counter);
+        }
     }
 
     counter as i64
-}
-
-fn abs(x: i32) -> i32 {
-    if x >= 0 {
-        x
-    } else {
-        -x
-    }
 }
