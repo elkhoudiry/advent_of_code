@@ -91,6 +91,7 @@ fn main() {
     // year_2023::day_6::run("/src/year_2023/day_6");
     // year_2023::day_7::run("/src/year_2023/day_7");
     year_2023::day_8::run("/src/year_2023/day_8");
+    year_2023::day_9::run("/src/year_2023/day_9");
 
     ()
 }
