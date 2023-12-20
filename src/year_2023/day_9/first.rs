@@ -25,7 +25,7 @@ fn handle_input(input: &str) -> i64 {
         .sum()
 }
 
-fn handle_line<'a>(line: &str) -> i64 {
+fn handle_line(line: &str) -> i64 {
     let numbers = line
         .split_ascii_whitespace()
         .into_iter()

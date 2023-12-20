@@ -2,7 +2,7 @@ use std::vec;
 
 use crate::utils::files;
 
-const TAG: &str = "[DAY 9-2]";
+const TAG: &str = "[DAY 10-2]";
 
 pub fn execute(file_path: &str) -> i64 {
     println!("{TAG} starting ...");
@@ -25,7 +25,7 @@ fn handle_input(input: &str) -> i64 {
         .sum()
 }
 
-fn handle_line(line: &str) -> i64 {
+fn handle_line<'a>(line: &str) -> i64 {
     let numbers = line
         .split_ascii_whitespace()
         .into_iter()

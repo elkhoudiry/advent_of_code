@@ -1,6 +1,5 @@
 pub mod first;
 pub mod second;
-pub mod second_naive;
 
 pub fn run(path: &str) {
     assert_eq!(114, first::execute(format!("{path}/sample").as_str()));
