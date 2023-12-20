@@ -1,7 +1,5 @@
-use ndarray::Array2;
-
 use crate::utils::files;
-use std::fmt::Debug;
+
 const TAG: &str = "[DAY 10-1]";
 
 pub fn execute(file_path: &str) -> i64 {
@@ -22,9 +20,9 @@ fn handle_input(input: &str) -> i64 {
 }
 
 fn start_map(lines: &Vec<Vec<char>>) -> i64 {
+    let start_position = get_start_position(lines);
+
     let mut all_moves: Vec<Vec<String>> = vec![];
-    let current_move = get_start_position(lines);
-    let prev_move = current_move;
     let mut counter = 0;
 
     for line_index in 0..lines.len() {
@@ -33,16 +31,15 @@ fn start_map(lines: &Vec<Vec<char>>) -> i64 {
         all_moves.push(line.iter().map(|_| ".".to_string()).collect::<Vec<_>>())
     }
 
-    all_moves[current_move.0][current_move.1] = counter.to_string();
+    all_moves[start_position.0][start_position.1] = counter.to_string();
+    let mut current_moves: Vec<(usize, usize)> =
+        get_start_moves(lines, start_position, &mut all_moves);
 
-    counter += 1;
-    move_in_map(
-        lines,
-        &current_move,
-        &prev_move,
-        &mut all_moves,
-        &mut counter,
-    );
+    while !current_moves.is_empty() {
+        counter += 1;
+
+        current_moves = move_in_map(lines, &current_moves, &mut all_moves, counter);
+    }
 
     println!("{TAG} {:#?}", all_moves);
 
@@ -51,18 +48,22 @@ fn start_map(lines: &Vec<Vec<char>>) -> i64 {
 
 fn move_in_map(
     lines: &Vec<Vec<char>>,
-    current_move: &(usize, usize),
-    prev_move: &(usize, usize),
-    mut all_moves: &mut Vec<Vec<String>>,
-    counter: &mut i64,
-) {
-    let possible_moves =
-        get_possible_moves(lines, &current_move, &prev_move, &mut all_moves, &counter);
+    current_moves: &Vec<(usize, usize)>,
+    all_moves: &mut Vec<Vec<String>>,
+    counter: i64,
+) -> Vec<(usize, usize)> {
+    let mut next_moves: Vec<(usize, usize)> = vec![];
 
-    for mov in possible_moves {
-        *counter += 1;
-        move_in_map(lines, &mov, current_move, all_moves, counter)
+    for mov in current_moves {
+        all_moves[mov.0][mov.1] = counter.to_string();
+
+        match get_next_move(lines, mov, all_moves) {
+            Some(mov) => next_moves.push(mov),
+            None => {}
+        }
     }
+
+    next_moves
 }
 
 fn get_start_position(lines: &Vec<Vec<char>>) -> (usize, usize) {
@@ -83,179 +84,106 @@ fn get_start_position(lines: &Vec<Vec<char>>) -> (usize, usize) {
     (line_index, char_index)
 }
 
-fn get_possible_moves(
+fn get_start_moves(
     lines: &Vec<Vec<char>>,
-    location: &(usize, usize),
-    blocked: &(usize, usize),
+    location: (usize, usize),
     all_moves: &mut Vec<Vec<String>>,
-    counter: &i64,
 ) -> Vec<(usize, usize)> {
     let mut moves: Vec<(usize, usize)> = vec![];
 
-    match north_move(lines, location, all_moves, counter) {
-        None => {}
-        Some(mov) => {
-            if all_moves[mov.0][mov.1] != "." {
-            } else {
-                all_moves[mov.0][mov.1] = counter.to_string();
-                moves.push(mov);
-            }
-        }
+    if can_move_north(lines, &location, all_moves) {
+        moves.push((location.0 - 1, location.1))
     }
 
-    match south_move(lines, location, all_moves, counter) {
-        None => {}
-        Some(mov) => {
-            if all_moves[mov.0][mov.1] != "." {
-            } else {
-                all_moves[mov.0][mov.1] = counter.to_string();
-                moves.push(mov);
-            }
-        }
+    if can_move_south(lines, &location, all_moves) {
+        moves.push((location.0 + 1, location.1))
     }
 
-    match west_move(lines, location, all_moves, counter) {
-        None => {}
-        Some(mov) => {
-            if all_moves[mov.0][mov.1] != "." {
-            } else {
-                all_moves[mov.0][mov.1] = counter.to_string();
-                moves.push(mov);
-            }
-        }
+    if can_move_west(lines, &location, all_moves) {
+        moves.push((location.0, location.1 - 1))
     }
 
-    match east_move(lines, location, all_moves, counter) {
-        None => {}
-        Some(mov) => {
-            if all_moves[mov.0][mov.1] != "." {
-            } else {
-                all_moves[mov.0][mov.1] = counter.to_string();
-                moves.push(mov);
-            }
-        }
+    if can_move_east(lines, &location, all_moves) {
+        moves.push((location.0, location.1 + 1))
     }
 
     moves
-        .into_iter()
-        .filter(|mov| mov.0 != blocked.0 || mov.1 != blocked.1)
-        .collect::<Vec<_>>()
 }
 
-fn north_move(
+fn get_next_move(
     lines: &Vec<Vec<char>>,
     location: &(usize, usize),
     all_moves: &mut Vec<Vec<String>>,
-    counter: &i64,
 ) -> Option<(usize, usize)> {
-    if location.0 == 0 || all_moves[location.0 - 1][location.1] != "." {
-        return None;
-    }
+    let char = lines[location.0][location.1];
 
-    let char = lines[location.0 - 1][location.1];
-    let can_move_west = location.1 != 0;
-    let can_move_east = location.1 != lines[location.0].len() - 1;
-
-    if char == '|' && location.0 >= 2 {
-        all_moves[location.0 - 1][location.1] = counter.to_string();
-        return Some((location.0 - 2, location.1));
-    } else if can_move_east && char == 'F' {
-        all_moves[location.0 - 1][location.1] = counter.to_string();
-        return Some((location.0 - 1, location.1 + 1));
-    } else if can_move_west && char == '7' {
-        all_moves[location.0 - 1][location.1] = counter.to_string();
-        return Some((location.0 - 1, location.1 - 1));
-    }
-
-    return None;
+    return if char == '-' && can_move_east(lines, location, all_moves) {
+        Some((location.0, location.1 + 1))
+    } else if char == '-' && can_move_west(lines, location, all_moves) {
+        Some((location.0, location.1 - 1))
+    } else if char == '|' && can_move_north(lines, location, all_moves) {
+        Some((location.0 - 1, location.1))
+    } else if char == '|' && can_move_south(lines, location, all_moves) {
+        Some((location.0 + 1, location.1))
+    } else if char == '7' && can_move_south(lines, location, all_moves) {
+        Some((location.0 + 1, location.1))
+    } else if char == '7' && can_move_west(lines, location, all_moves) {
+        Some((location.0, location.1 - 1))
+    } else if char == 'F' && can_move_south(lines, location, all_moves) {
+        Some((location.0 + 1, location.1))
+    } else if char == 'F' && can_move_east(lines, location, all_moves) {
+        Some((location.0, location.1 + 1))
+    } else if char == 'J' && can_move_north(lines, location, all_moves) {
+        Some((location.0 - 1, location.1))
+    } else if char == 'J' && can_move_west(lines, location, all_moves) {
+        Some((location.0, location.1 - 1))
+    } else if char == 'L' && can_move_north(lines, location, all_moves) {
+        Some((location.0 - 1, location.1))
+    } else if char == 'L' && can_move_east(lines, location, all_moves) {
+        Some((location.0, location.1 + 1))
+    } else {
+        None
+    };
 }
 
-fn south_move(
+fn can_move_north(
     lines: &Vec<Vec<char>>,
     location: &(usize, usize),
     all_moves: &mut Vec<Vec<String>>,
-    counter: &i64,
-) -> Option<(usize, usize)> {
-    if location.0 >= lines.len() - 1 || all_moves[location.0 + 1][location.1] != "." {
-        return None;
-    }
+) -> bool {
+    let can_move_north = location.0 > 0 && all_moves[location.0 - 1][location.1] == ".";
 
-    let char = lines[location.0 + 1][location.1];
-    let can_move_west = location.1 != 0;
-    let can_move_east = location.1 != lines[location.0].len() - 1;
-
-    if char == '|' && location.0 < lines.len() - 2 {
-        all_moves[location.0 + 1][location.1] = counter.to_string();
-        return Some((location.0 + 2, location.1));
-    } else if can_move_east && char == 'L' {
-        all_moves[location.0 + 1][location.1] = counter.to_string();
-        return Some((location.0 + 1, location.1 + 1));
-    } else if can_move_west && char == 'J' {
-        all_moves[location.0 + 1][location.1] = counter.to_string();
-        return Some((location.0 + 1, location.1 - 1));
-    }
-
-    return None;
+    can_move_north && ['|', '7', 'F'].contains(&lines[location.0 - 1][location.1])
 }
 
-fn west_move(
+fn can_move_south(
     lines: &Vec<Vec<char>>,
     location: &(usize, usize),
     all_moves: &mut Vec<Vec<String>>,
-    counter: &i64,
-) -> Option<(usize, usize)> {
+) -> bool {
+    let can_move_south =
+        location.0 < lines.len() - 1 && all_moves[location.0 + 1][location.1] == ".";
+
+    can_move_south && ['|', 'J', 'L'].contains(&lines[location.0 + 1][location.1])
+}
+
+fn can_move_west(
+    lines: &Vec<Vec<char>>,
+    location: &(usize, usize),
+    all_moves: &mut Vec<Vec<String>>,
+) -> bool {
     let can_move_west = location.1 != 0 && all_moves[location.0][location.1 - 1] == ".";
 
-    if !can_move_west {
-        return None;
-    }
-
-    let char = lines[location.0][location.1 - 1];
-    let can_move_south = location.0 < lines.len() - 1;
-    let can_move_north = location.0 > 0;
-
-    dbg!(char);
-    if char == '-' && location.1 >= 2 {
-        all_moves[location.0][location.1 - 1] = counter.to_string();
-        return Some((location.0, location.1 - 2));
-    } else if can_move_north && char == 'L' {
-        all_moves[location.0][location.1 - 1] = counter.to_string();
-        return Some((location.0 - 1, location.1 - 1));
-    } else if can_move_south && char == 'F' {
-        all_moves[location.0][location.1 - 1] = counter.to_string();
-        return Some((location.0 + 1, location.1 - 1));
-    }
-
-    return None;
+    can_move_west && ['-', 'F', 'L'].contains(&lines[location.0][location.1 - 1])
 }
 
-fn east_move(
+fn can_move_east(
     lines: &Vec<Vec<char>>,
     location: &(usize, usize),
     all_moves: &mut Vec<Vec<String>>,
-    counter: &i64,
-) -> Option<(usize, usize)> {
+) -> bool {
     let can_move_east =
-        location.1 < lines[location.0].len() - 1 && all_moves[location.0][location.1 + 1] == ".";
+        location.1 != lines[location.0].len() - 1 && all_moves[location.0][location.1 + 1] == ".";
 
-    if !can_move_east {
-        return None;
-    }
-
-    let char = lines[location.0][location.1 + 1];
-    let can_move_south = location.0 < lines.len() - 1;
-    let can_move_north = location.0 > 0;
-
-    if char == '-' && location.1 < lines[location.0].len() - 2 {
-        all_moves[location.0][location.1 + 1] = counter.to_string();
-        return Some((location.0, location.1 + 2));
-    } else if can_move_north && char == 'J' {
-        all_moves[location.0][location.1 + 1] = counter.to_string();
-        return Some((location.0 - 1, location.1 + 1));
-    } else if can_move_south && char == '7' {
-        all_moves[location.0][location.1 + 1] = counter.to_string();
-        return Some((location.0 + 1, location.1 + 1));
-    }
-
-    return None;
+    can_move_east && ['-', '7', 'J'].contains(&lines[location.0][location.1 + 1])
 }
