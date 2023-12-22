@@ -18,8 +18,8 @@ fn handle_input(input: &str) -> i64 {
         .enumerate()
         .map(|(index, item)| {
             let result = handle_line(item);
-            let line_number = index + 1;
-            println!("{TAG} Line #{} result: {result}", line_number);
+            // let line_number = index + 1;
+            // println!("{TAG} Line #{} result: {result}", line_number);
             result
         })
         .sum()

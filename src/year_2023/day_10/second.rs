@@ -39,8 +39,6 @@ fn start_map(lines: &Vec<Vec<char>>) -> i64 {
         current_moves = move_in_map(lines, &current_moves, &mut all_moves);
     }
 
-    println!("{TAG} {:#?}", all_moves);
-
     count_in_loop(all_moves)
 }
 
@@ -69,10 +67,6 @@ fn handle_in_loop_char(line: &Vec<String>, char_index: &usize) -> bool {
             crosses += 1;
         }
         counter += 1;
-    }
-
-    if crosses % 2 != 0 {
-        println!("{TAG} line: {:#?}, index: {char_index}", line)
     }
 
     crosses % 2 != 0

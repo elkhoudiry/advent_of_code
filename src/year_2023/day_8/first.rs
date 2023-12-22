@@ -25,7 +25,6 @@ fn handle_input(input: &str) -> i64 {
 }
 
 fn handle_line<'a>(line: &'a str, map: &mut HashMap<&'a str, [&'a str; 2]>) {
-    dbg!(line);
     let (node, network) = line.split_once('=').unwrap();
     let trimmed = network
         .trim()

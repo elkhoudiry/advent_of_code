@@ -18,8 +18,8 @@ fn handle_input(input: &str) -> i64 {
         .enumerate()
         .map(|(index, item)| {
             let result = handle_line(item);
-            let line_number = index + 1;
-            println!("{TAG} Line #{} result: {result}", line_number);
+            // let line_number = index + 1;
+            // println!("{TAG} Line #{} result: {result}", line_number);
             result
         })
         .sum()
@@ -59,11 +59,6 @@ fn find_next_value(arr: Vec<i64>) -> i64 {
     let mut result = 0;
 
     while counter < vec_of_vecs.len() {
-        println!(
-            "{TAG} {} + {}",
-            result,
-            vec_of_vecs[vec_of_vecs.len() - 1 - counter].last().unwrap()
-        );
         result = result + vec_of_vecs[vec_of_vecs.len() - 1 - counter].last().unwrap();
         counter += 1;
     }

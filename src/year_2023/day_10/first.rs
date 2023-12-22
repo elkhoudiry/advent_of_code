@@ -41,8 +41,6 @@ fn start_map(lines: &Vec<Vec<char>>) -> i64 {
         current_moves = move_in_map(lines, &current_moves, &mut all_moves, counter);
     }
 
-    println!("{TAG} {:#?}", all_moves);
-
     counter
 }
 
